@@ -61,7 +61,7 @@ def value_weighted_by_momentum(buying_power):
     vs_by_ms_df.sort_values('HQM by RV Score', inplace=True, ascending=False)
     vs_by_ms_df.reset_index(inplace=True, drop=True)
     vs_by_ms_df = vs_by_ms_df[columns]
-    vs_by_ms_df = vs_by_ms_df[:10]
+
     vs_by_ms_df = sharesToBuy(vs_by_ms_df, buying_power)
     writer = pd.ExcelWriter('value_by_momentum_strategy.xlsx', engine='xlsxwriter')
     vs_by_ms_df.to_excel(writer, sheet_name='Value by Momentum Strategy', index=False)

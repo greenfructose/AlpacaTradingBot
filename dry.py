@@ -16,7 +16,7 @@ def symbolStrings(stocks):
 
 
 def sharesToBuy(df, buying_power):
-    position_size = buying_power / len(df.index)
-    for i in range(0, len(df.index)):
+    position_size = buying_power / 25
+    for i in range(0, 25):
         df.loc[i, 'Number of Shares to Buy'] = math.floor(position_size / df.loc[i, 'Price'])
     return df

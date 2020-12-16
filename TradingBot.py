@@ -57,3 +57,9 @@ print(f'${account.buying_power} is available as buying power.')
 # Get a list of all active assets.
 positions = api.list_positions()
 print(f'Below are current positions:\n{positions}')
+
+# Get current scores and evaluate number of shares to buy.
+# below are commented out for testing
+# rv.robust_value()
+# hqm.hq_quantitative_momentum()
+vwm.value_weighted_by_momentum(int(float(account.buying_power)))
