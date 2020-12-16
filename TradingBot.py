@@ -31,18 +31,18 @@ def take_profit():
         if float(position.unrealized_plpc) > 10.0:
             print(f'{position.symbol} has gained {position.unrealized_plpc}% Taking profit.')
             profit = profit + float(position.unrealized_pl)
-            api.close_position(position.symbol)
-            print(f'Profit taken: ${profit}')
+            # api.close_position(position.symbol)
+    print(f'Profit taken: ${profit}')
 
 
 def stop_loss():
     loss = 0.0
     for position in positions:
-        if float(position.unrealized_plpc) < -1.5:
+        if float(position.unrealized_plpc) < -2.0:
             print(f'{position.symbol} has lost {position.unrealized_plpc}%. Initiating stoploss.')
             loss = loss + float(position.unrealized_pl)
-            api.close_position(position.symbol)
-            print(f'Loss taken: {loss}')
+            # api.close_position(position.symbol)
+    print(f'Loss taken: {loss}')
 
 
 # Check if our account is restricted from trading.
@@ -65,8 +65,8 @@ for position in positions:
 print(tabulate(table, headers=['Ticker', 'Quantity', 'Current Price', 'Avg Entry'], tablefmt='orgtbl'))
 
 # Get current scores and evaluate number of shares to buy.
-# take_profit()
-# stop_loss()
+take_profit()
+stop_loss()
 # below are commented out for testing
 # rv.robust_value()
 # hqm.hq_quantitative_momentum()
