@@ -4,6 +4,7 @@ import secret as s
 import hq_quantitative_momentum as hqm
 import robust_value as rv
 import value_weighted_by_momentum as vwm
+import top_buys as tb
 
 
 api = tradeapi.REST(
@@ -59,7 +60,11 @@ positions = api.list_positions()
 print(f'Below are current positions:\n{positions}')
 
 # Get current scores and evaluate number of shares to buy.
+take_profit()
+stop_loss()
 # below are commented out for testing
 # rv.robust_value()
 # hqm.hq_quantitative_momentum()
-vwm.value_weighted_by_momentum(int(float(account.buying_power)))
+# vwm.value_weighted_by_momentum(int(float(account.buying_power)))
+# tb.top_buys()
+# order_buy()
