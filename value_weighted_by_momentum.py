@@ -6,7 +6,7 @@ import datetime as dt
 from dry import sharesToBuy
 
 
-def value_weighted_by_momentum():
+def value_weighted_by_momentum(buying_power):
     stocks = pd.read_csv('sp_500_stocks.csv')
     ms_df = pd.read_excel('momentum_strategy.xlsx', engine='openpyxl')
     vs_df = pd.read_excel('value_strategy.xlsx', engine='openpyxl')
@@ -62,7 +62,7 @@ def value_weighted_by_momentum():
     vs_by_ms_df.reset_index(inplace=True, drop=True)
     vs_by_ms_df = vs_by_ms_df[columns]
     vs_by_ms_df = vs_by_ms_df[:10]
-    vs_by_ms_df = sharesToBuy(vs_by_ms_df)
+    vs_by_ms_df = sharesToBuy(vs_by_ms_df, buying_power)
     writer = pd.ExcelWriter('value_by_momentum_strategy.xlsx', engine='xlsxwriter')
     vs_by_ms_df.to_excel(writer, sheet_name='Value by Momentum Strategy', index=False)
     background_color = '#0a0a23'

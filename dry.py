@@ -15,16 +15,8 @@ def symbolStrings(stocks):
     return symbol_strings
 
 
-def sharesToBuy(df):
-    portfolio_size = input('Enter the value of your portfolio:')
-    try:
-        val = float(portfolio_size)
-    except ValueError:
-        print('Please enter a number')
-        portfolio_size = input('Enter the value of your portfolio:')
-        val = float(portfolio_size)
-
-    position_size = val / len(df.index)
+def sharesToBuy(df, buying_power):
+    position_size = buying_power / len(df.index)
     for i in range(0, len(df.index)):
         df.loc[i, 'Number of Shares to Buy'] = math.floor(position_size / df.loc[i, 'Price'])
     return df
