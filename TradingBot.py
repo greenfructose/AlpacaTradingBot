@@ -1,5 +1,6 @@
 import alpaca_trade_api as tradeapi
 import csv
+from tabulate import tabulate
 import secret as s
 import hq_quantitative_momentum as hqm
 import robust_value as rv
@@ -57,11 +58,15 @@ print(f'${account.buying_power} is available as buying power.')
 
 # Get a list of all active assets.
 positions = api.list_positions()
-print(f'Below are current positions:\n{positions}')
+print('Below are current positions:')
+table = []
+for position in positions:
+    table.append([position.symbol, position.qty, position.current_price, position.avg_entry_price])
+print(tabulate(table, headers=['Ticker', 'Quantity', 'Current Price', 'Avg Entry'], tablefmt='orgtbl'))
 
 # Get current scores and evaluate number of shares to buy.
-take_profit()
-stop_loss()
+# take_profit()
+# stop_loss()
 # below are commented out for testing
 # rv.robust_value()
 # hqm.hq_quantitative_momentum()
