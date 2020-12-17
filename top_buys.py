@@ -9,7 +9,6 @@ def top_buys():
     ]
 
     idf = pd.read_excel('value_by_momentum_strategy.xlsx', engine='openpyxl')
-    odf = pd.DataFrame(columns=columns)
 
     idf = idf[:25]
     idf.to_csv('top-buys.csv', columns=columns, index=False)
