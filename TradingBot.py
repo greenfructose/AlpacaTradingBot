@@ -1,5 +1,6 @@
 import alpaca_trade_api as tradeapi
 import csv
+import operator
 from tabulate import tabulate
 import secret as s
 import hq_quantitative_momentum as hqm
@@ -62,8 +63,25 @@ positions = api.list_positions()
 print('Below are current positions:')
 table = []
 for position in positions:
-    table.append([position.symbol, position.qty, position.current_price, position.avg_entry_price])
-print(tabulate(table, headers=['Ticker', 'Quantity', 'Current Price', 'Avg Entry'], tablefmt='orgtbl'))
+    table.append(
+        [
+            position.symbol,
+            position.qty,
+            f'${float(position.current_price):.2f}',
+            f'${float(position.avg_entry_price):.2f}',
+            f'${float(position.unrealized_pl):.2f}',
+            f'{float(position.unrealized_plpc)*100:.2f}%'
+        ]
+    )
+print(tabulate(sorted(table, key=operator.itemgetter(5), reverse=True), headers=
+            ['Ticker',
+             'Quantity',
+             'Current Price',
+             'Avg Entry',
+             'P/L',
+             'P/L%'
+             ],
+               tablefmt='orgtbl'))
 
 # Get current scores and evaluate number of shares to buy.
 # take_profit()
@@ -73,4 +91,4 @@ print(tabulate(table, headers=['Ticker', 'Quantity', 'Current Price', 'Avg Entry
 # hqm.hq_quantitative_momentum()
 # vwm.value_weighted_by_momentum(int(float(account.buying_power)))
 # tb.top_buys()
-order_buy()
+# order_buy()
