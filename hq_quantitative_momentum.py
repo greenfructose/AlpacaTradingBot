@@ -10,7 +10,7 @@ from dry import symbolStrings
 
 
 def hq_quantitative_momentum():
-    stocks = pd.read_csv('sp_500_stocks.csv')
+    stocks = pd.read_csv('russell_1000_stocks.csv')
     symbol_strings = symbolStrings(stocks)
     columns = [
         'Ticker',
@@ -33,24 +33,51 @@ def hq_quantitative_momentum():
         'Three-Month',
         'One-Month'
     ]
+    numeric_data_columns =[
+        'Stock Price',
+        'One-Year Return',
+        'Six-Month Return',
+        'Three-Month Return',
+        'One-Month Return'
+    ]
     df = pd.DataFrame(columns=columns)
     for symbol_string in symbol_strings:
         batch_call_url = f'https://cloud.iexapis.com/stable/stock/market/batch?symbols={symbol_string}&types=price,' \
                          f'stats&token={IEX_CLOUD_API_TOKEN}'
         data = requests.get(batch_call_url).json()
         for symbol in symbol_string.split(','):
+            try:
+                stock_price = data[symbol]['price']*1.0
+            except TypeError:
+                stock_price = np.NaN
+            try:
+                year_one_return = data[symbol]['stats']['year1ChangePercent']*1.0
+            except TypeError:
+                year_one_return = np.NaN
+            try:
+                month_6_return = data[symbol]['stats']['month6ChangePercent']*1.0
+            except TypeError:
+                month_6_return = np.NaN
+            try:
+                month_3_return = data[symbol]['stats']['month3ChangePercent']*1.0
+            except TypeError:
+                month_3_return = np.NaN
+            try:
+                month_1_return = data[symbol]['stats']['month1ChangePercent']*1.0
+            except TypeError:
+                month_1_return = np.NaN
             df = df.append(
                 pd.Series(
                     [
                         symbol,
-                        data[symbol]['price'],
-                        data[symbol]['stats']['year1ChangePercent'],
+                        stock_price,
+                        year_one_return,
                         'N/A',
-                        data[symbol]['stats']['month6ChangePercent'],
+                        month_6_return,
                         'N/A',
-                        data[symbol]['stats']['month3ChangePercent'],
+                        month_3_return,
                         'N/A',
-                        data[symbol]['stats']['month1ChangePercent'],
+                        month_1_return,
                         'N/A',
                         'N/A',
                         0,
@@ -60,6 +87,8 @@ def hq_quantitative_momentum():
                 ),
                 ignore_index=True
             )
+    for column in numeric_data_columns:
+        df[column].fillna(df[column].mean(), inplace=True)
     for row in df.index:
         for time_period in time_periods:
             if df.loc[row, f'{time_period} Return'] is None:

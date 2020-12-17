@@ -7,7 +7,7 @@ from dry import sharesToBuy
 
 
 def value_weighted_by_momentum(buying_power):
-    stocks = pd.read_csv('sp_500_stocks.csv')
+    stocks = pd.read_csv('russell_1000_stocks.csv')
     ms_df = pd.read_excel('momentum_strategy.xlsx', engine='openpyxl')
     vs_df = pd.read_excel('value_strategy.xlsx', engine='openpyxl')
     vs_df.set_index('Ticker', inplace=True, drop=True)

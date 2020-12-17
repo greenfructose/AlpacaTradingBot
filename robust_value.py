@@ -10,7 +10,7 @@ from dry import symbolStrings
 
 
 def robust_value():
-    stocks = pd.read_csv('sp_500_stocks.csv')
+    stocks = pd.read_csv('russell_1000_stocks.csv')
     symbol_strings = symbolStrings(stocks)
     columns = [
         'Ticker',
@@ -30,6 +30,7 @@ def robust_value():
         'Date of Quote'
     ]
     numeric_data_columns = [
+        'Stock Price',
         'Price-to-Earnings Ratio',
         'Price-to-Book Ratio',
         'Price-to-Sales Ratio',
@@ -42,9 +43,36 @@ def robust_value():
         batch_call_url = f'https://cloud.iexapis.com/stable/stock/market/batch/?types=quote,advanced-stats&symbols={symbol_string}&token={IEX_CLOUD_API_TOKEN}'
         data = requests.get(batch_call_url).json()
         for symbol in symbol_string.split(','):
-            enterprise_value = data[symbol]['advanced-stats']['enterpriseValue']
-            ebitda = data[symbol]['advanced-stats']['EBITDA']
-            gross_profit = data[symbol]['advanced-stats']['grossProfit']
+            try:
+                enterprise_value = data[symbol]['advanced-stats']['enterpriseValue']*1.0
+            except TypeError:
+                enterprise_value = np.NaN
+                missing_data.append(
+                    {
+                        'stock': symbol,
+                        'missing_data': 'enterprise_value'
+                    }
+                )
+            try:
+                ebitda = data[symbol]['advanced-stats']['EBITDA']*1.0
+            except TypeError:
+                ebitda = np.NaN
+                missing_data.append(
+                    {
+                        'stock': symbol,
+                        'missing_data': 'EBITDA'
+                    }
+                )
+            try:
+                gross_profit = data[symbol]['advanced-stats']['grossProfit']*1.0
+            except TypeError:
+                gross_profit = np.NaN
+                missing_data.append(
+                    {
+                        'stock': symbol,
+                        'missing_data': 'gross_profit'
+                    }
+                )
             try:
                 ev_to_ebitda = enterprise_value / ebitda
             except TypeError:
@@ -65,16 +93,56 @@ def robust_value():
                         'missing_data': 'ev_to_gp'
                     }
                 )
+            try:
+                latest_price = data[symbol]['quote']['latestPrice']*1.0
+            except TypeError:
+                latest_price = np.NaN
+                missing_data.append(
+                    {
+                        'stock': symbol,
+                        'missing_data': 'latest_price'
+                    }
+                )
+            try:
+                pe_ratio = data[symbol]['quote']['peRatio']*1.0
+            except TypeError:
+                pe_ratio = np.NaN
+                missing_data.append(
+                    {
+                        'stock': symbol,
+                        'missing_data': 'pe_ratio'
+                    }
+                )
+            try:
+                price_to_book = data[symbol]['advanced-stats']['priceToBook']*1.0
+            except TypeError:
+                price_to_book = np.NaN
+                missing_data.append(
+                    {
+                        'stock': symbol,
+                        'missing_data': 'price_to_book'
+                    }
+                )
+            try:
+                price_to_sales = data[symbol]['advanced-stats']['priceToSales']*1
+            except TypeError:
+                price_to_sales = np.NaN
+                missing_data.append(
+                    {
+                        'stock': symbol,
+                        'missing_data': 'price_to_sales'
+                    }
+                )
             df = df.append(
                 pd.Series(
                     [
                         symbol,
-                        data[symbol]['quote']['latestPrice'],
-                        data[symbol]['quote']['peRatio'],
+                        latest_price,
+                        pe_ratio,
                         'N/A',
-                        data[symbol]['advanced-stats']['priceToBook'],
+                        price_to_book,
                         'N/A',
-                        data[symbol]['advanced-stats']['priceToSales'],
+                        price_to_sales,
                         'N/A',
                         ev_to_ebitda,
                         'N/A',
