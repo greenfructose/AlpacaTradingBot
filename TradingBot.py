@@ -20,9 +20,10 @@ def order_buy():
     with open('top-buys.csv', 'r') as f:
         reader = csv.DictReader(f)
         for row in reader:
-            api.submit_order(row['Ticker'], int(row['Number of Shares to Buy']), 'buy', 'market', 'day')
-            print(row['Ticker'])
-            print(row['Number of Shares to Buy'])
+            if int(row['Number of Shares to Buy']) > 0:
+                api.submit_order(row['Ticker'], int(row['Number of Shares to Buy']), 'buy', 'market', 'day')
+                print(row['Ticker'])
+                print(row['Number of Shares to Buy'])
 
 
 def take_profit():
