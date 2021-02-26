@@ -87,8 +87,8 @@ print(tabulate(sorted(table, key=operator.itemgetter(5), reverse=True), headers=
 # take_profit()
 # stop_loss()
 # # below are commented out for testing
-# rv.robust_value()
-# hqm.hq_quantitative_momentum()
-# vwm.value_weighted_by_momentum(int(float(account.buying_power)))
-# tb.top_buys()
+rv.robust_value()
+hqm.hq_quantitative_momentum()
+vwm.value_weighted_by_momentum(int(float(account.buying_power)))
+tb.top_buys()
 # order_buy()
